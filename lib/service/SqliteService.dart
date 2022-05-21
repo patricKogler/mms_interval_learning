@@ -75,7 +75,7 @@ class SqliteService {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> lectures = await db.query("Lecture");
     return List.generate(lectures.length, (i) {
-      return Lecture(id: lectures[i]["id"], name: lectures[i]["name"]);
+      return Lecture.fromMap(lectures[i]);
     });
   }
 
@@ -84,7 +84,7 @@ class SqliteService {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> exams = await db.query("Exam");
     return List.generate(exams.length, (i) {
-      return Exam(id: exams[i]["id"], date: exams[i]["date"], passed: exams[i]["passed"]);
+      return Exam.fromMap(exams[i]);
     });
   }
 
@@ -93,7 +93,7 @@ class SqliteService {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> topics = await db.query("Topic");
     return List.generate(topics.length, (i) {
-      return Topic(id: topics[i]["id"], title: topics[i]["title"]);
+      return Topic.fromMap(topics[i]);
     });
   }
 
@@ -102,7 +102,7 @@ class SqliteService {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> correlations = await db.query("Correlation");
     return List.generate(correlations.length, (i) {
-      return Correlation(correlations[i]["Lecture.id"], correlations[i]["Exam.id"], correlations[i]["Topic.id"]);
+      return Correlation.fromMap(correlations[i]);
     });
   }
 
@@ -111,7 +111,7 @@ class SqliteService {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> questions = await db.query("Question");
     return List.generate(questions.length, (i) {
-      return Question(id: questions[i]["id"], text: questions[i]["text"], mediaPath: questions[i]["media"], topicId: questions[i]["Topic.id"]);
+      return Question.fromMap(questions[i]);
     });
   }
 
@@ -120,7 +120,7 @@ class SqliteService {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> progress = await db.query("Progress");
     return List.generate(progress.length, (i) {
-      return Progress(id: progress[i]["id"], evaluation: progress[i]["Evaluation"], date: progress[i]["date"], questionId: progress[i]["Question.id"]);
+      return Progress.fromMap(progress[i]);
     });
   }
 }
