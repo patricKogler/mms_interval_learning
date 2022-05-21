@@ -1,3 +1,6 @@
+/// Topic class contains basic information on topics
+/// [id] is an unique specifier for each topic in the database
+/// [title] is the user generated title of the topic
 class Topic {
   final int? id;
   String title;

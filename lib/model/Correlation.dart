@@ -1,3 +1,7 @@
+/// Correlation class contains the correlation between lecture, exams and topics
+/// [lectureId] is the lecture specifier that specifies which lecture exams and topics are assigned to
+/// [examId] is the exam specifier used to assign an exam to a lecture and topics
+/// [topicId] is the topic specifier used to assign a topic to a lecture and exams
 class Correlation {
   final int lectureId;
   final int examId;
