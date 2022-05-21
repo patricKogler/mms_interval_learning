@@ -25,4 +25,9 @@ class Progress {
       "Questions.id": questionId
     };
   }
+
+  @override
+  String toString() {
+    return "{[id: $id; evaluation: $evaluation; date: $date; Question.id: $questionId]}";
+  }
 }

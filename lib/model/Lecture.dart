@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -25,5 +23,10 @@ class Lecture {
       "id": id,
       "name": name
     };
+  }
+
+  @override
+  String toString() {
+    return "{[id: $id; name: $name]}";
   }
 }

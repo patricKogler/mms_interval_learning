@@ -21,4 +21,9 @@ class Exam {
       "passed": passed
     };
   }
+
+  @override
+  String toString() {
+    return "{[id: $id; date: $date; passed: $passed]}";
+  }
 }

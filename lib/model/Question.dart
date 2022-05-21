@@ -25,4 +25,9 @@ class Question {
       "Topic.id": topicId
     };
   }
+
+  @override
+  String toString() {
+    return "{[id: $id; text: $text; media: $mediaPath; Topic.id: $topicId]}";
+  }
 }

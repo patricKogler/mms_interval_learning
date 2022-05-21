@@ -21,4 +21,9 @@ class Correlation {
       "Topic.id": topicId
     };
   }
+
+  @override
+  String toString() {
+    return "{[Lecture.id: $lectureId; Exam.id: $examId; Topic.id: $topicId)]}";
+  }
 }

@@ -17,4 +17,9 @@ class Topic {
       "title": title
     };
   }
+
+  @override
+  String toString() {
+    return "{[id: $id; title: $title]}";
+  }
 }
