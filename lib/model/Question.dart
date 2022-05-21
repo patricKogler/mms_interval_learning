@@ -11,12 +11,15 @@ class Question {
 
   Question({this.id, required this.text, this.mediaPath, this.topicId});
 
+  /// retrieves data from database in form of a map
   Question.fromMap(Map<String, dynamic> map)
     : id = map["id"],
       text = map["text"],
       mediaPath = map["media"],
       topicId = map["Topic.id"];
 
+  /// returns map to use in database for inserts
+  /// must contain column names as Strings
   Map<String, dynamic> toMap() {
     return {
       "id": id,

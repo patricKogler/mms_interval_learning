@@ -10,13 +10,12 @@ class Lecture {
 
   Lecture({this.id, required this.name});
 
-  /// retrieves Data from database in form of a map
+  /// retrieves data from database in form of a map
   Lecture.fromMap(Map<String, dynamic> map)
     : id = map["id"],
       name = map["name"];
 
-
-  /// returns map for database
+  /// returns map to use in database for inserts
   /// must contain column names as Strings
   Map<String, dynamic> toMap() {
     return {

@@ -32,33 +32,45 @@ class SqliteService {
     );
   }
 
+
+  /// insert tuple [lecture] into table Lecture
   Future<void> insertLecture(Lecture lecture) async {
     final Database db = await initializeDB();
     await db.insert("Lecture", lecture.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
+
+  /// insert tuple [exam] into table Exam
   Future<void> insertExam(Exam exam) async {
     final Database db = await initializeDB();
     await db.insert("Exam", exam.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
+
+  /// insert tuple [topic] into table Topic
   Future<void> insertTopic(Topic topic) async {
     final Database db = await initializeDB();
     await db.insert("Topic", topic.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
+
+  /// insert tuple [correlation] into table Correlation
   Future<void> insertCorrelation(Correlation correlation) async {
     final Database db = await initializeDB();
     await db.insert("Correlation", correlation.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
+
+  /// insert tuple [question] into table Question
   Future<void> insertQuestion(Question question) async {
     final Database db = await initializeDB();
     await db.insert("Question", question.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
+
+  /// insert tuple [progress] into table Progress
   Future<void> insertProgress(Progress progress) async {
     final Database db = await initializeDB();
     await db.insert("Progress", progress.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
 
-
+  /// return table Lecture as list
   Future<List<Lecture>> lectures() async {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> lectures = await db.query("Lecture");
@@ -67,6 +79,7 @@ class SqliteService {
     });
   }
 
+  /// return table Exam as list
   Future<List<Exam>> exams() async {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> exams = await db.query("Exam");
@@ -75,6 +88,7 @@ class SqliteService {
     });
   }
 
+  /// return table Topic as list
   Future<List<Topic>> topics() async {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> topics = await db.query("Topic");
@@ -83,6 +97,7 @@ class SqliteService {
     });
   }
 
+  /// return table Correlation as list
   Future<List<Correlation>> correlations() async {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> correlations = await db.query("Correlation");
@@ -91,6 +106,7 @@ class SqliteService {
     });
   }
 
+  /// return table Question as list
   Future<List<Question>> questions() async {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> questions = await db.query("Question");
@@ -99,6 +115,7 @@ class SqliteService {
     });
   }
 
+  /// return table Progress as list
   Future<List<Progress>> progress() async {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> progress = await db.query("Progress");

@@ -7,10 +7,13 @@ class Topic {
 
   Topic({this.id, required this.title});
 
+  /// retrieves data from database in form of a map
   Topic.fromMap(Map<String, dynamic> map)
     : id = map["id"],
       title = map["title"];
 
+  /// returns map to use in database for inserts
+  /// must contain column names as Strings
   Map<String, dynamic> toMap() {
     return {
       "id": id,

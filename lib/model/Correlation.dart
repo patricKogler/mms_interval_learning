@@ -9,11 +9,14 @@ class Correlation {
 
   Correlation(this.lectureId, this.examId, this.topicId);
 
+  /// retrieves data from database in form of a map
   Correlation.fromMap(Map<String, dynamic> map)
     : lectureId = map["Lecture.id"],
       examId = map["Exam.id"],
       topicId = map["Topic.id"];
 
+  /// returns map to use in database for inserts
+  /// must contain column names as Strings
   Map<String, dynamic> toMap() {
     return {
       "Lecture.id": lectureId,

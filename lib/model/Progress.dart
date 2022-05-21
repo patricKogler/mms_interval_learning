@@ -11,12 +11,15 @@ class Progress {
 
   Progress({this.id, required this.evaluation, required this.date, this.questionId});
 
+  /// retrieves data from database in form of a map
   Progress.fromMap(Map<String, dynamic> map)
     : id = map["id"],
       evaluation = map["evaluation"],
       date = map["date"],
       questionId = map["Questions.id"];
 
+  /// returns map to use in database for inserts
+  /// must contain column names as Strings
   Map<String, dynamic> toMap() {
     return {
       "id": id,
