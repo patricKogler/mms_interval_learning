@@ -125,6 +125,8 @@ class SqliteService {
   }
 
 
+  /// updates Lecture table in database
+  /// new values are passed through [lecture] parameter
   Future<void> updateLecture(Lecture lecture) async {
     final Database db = await initializeDB();
     await db.update("Lecture",
@@ -133,6 +135,8 @@ class SqliteService {
     );
   }
 
+  /// updates Exam table in database
+  /// new values are passed through [exam] parameter
   Future<void> updateExam(Exam exam) async {
     final Database db = await initializeDB();
     await db.update("Exam",
@@ -140,6 +144,9 @@ class SqliteService {
         where: "id = ?", whereArgs: [exam.id]
     );
   }
+
+  /// updates Topic table in database
+  /// new values are passed through [topic] parameter
   Future<void> updateTopic(Topic topic) async {
     final Database db = await initializeDB();
     await db.update("Topic",
@@ -148,6 +155,8 @@ class SqliteService {
     );
   }
 
+  /// updates Correlation table in database
+  /// new values are passed through [correlation] parameter
   Future<void> updateCorrelation(Correlation correlation) async {
     final Database db = await initializeDB();
     await db.update("Correlation",
@@ -157,6 +166,8 @@ class SqliteService {
     );
   }
 
+  /// updates Question table in database
+  /// new values are passed through [question] parameter
   Future<void> updateQuestion(Question question) async {
     final Database db = await initializeDB();
     await db.update("Question",
@@ -165,6 +176,8 @@ class SqliteService {
     );
   }
 
+  /// updates Progress table in database
+  /// new values are passed through [progress] parameter
   Future<void> updateProgress(Progress progress) async {
     final Database db = await initializeDB();
     await db.update("Progress",
@@ -174,6 +187,8 @@ class SqliteService {
   }
 
 
+  /// deletes row of Lecture Table
+  /// [id] passes id of row to delete
   Future<void> deleteLecture(int id) async {
     final Database db = await initializeDB();
     await db.delete("Lecture",
@@ -181,6 +196,8 @@ class SqliteService {
     );
   }
 
+  /// deletes row of Exam Table
+  /// [id] passes id of row to delete
   Future<void> deleteExam(int id) async {
     final Database db = await initializeDB();
     await db.delete("Exam",
@@ -188,6 +205,8 @@ class SqliteService {
     );
   }
 
+  /// deletes row of Topic Table
+  /// [id] passes id of row to delete
   Future<void> deleteTopic(int id) async {
     final Database db = await initializeDB();
     await db.delete("Topics",
@@ -195,6 +214,8 @@ class SqliteService {
     );
   }
 
+  /// deletes row of Correlation Table
+  /// [id] passes id of row to delete
   Future<void> deleteCorrelation(int lectureId, int examId, int topicId) async {
     final Database db = await initializeDB();
     await db.delete("Correlation",
@@ -202,6 +223,9 @@ class SqliteService {
         whereArgs: [lectureId, examId, topicId]
     );
   }
+
+  /// deletes row of Question Table
+  /// [id] passes id of row to delete
   Future<void> deleteQuestion(int id) async {
     final Database db = await initializeDB();
     await db.delete("Question",
@@ -209,6 +233,8 @@ class SqliteService {
     );
   }
 
+  /// deletes row of Progress Table
+  /// [id] passes id of row to delete
   Future<void> deleteProgress(int id) async {
     final Database db = await initializeDB();
     await db.delete("Progress",
