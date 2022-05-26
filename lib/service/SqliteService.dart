@@ -123,4 +123,96 @@ class SqliteService {
       return Progress.fromMap(progress[i]);
     });
   }
+
+
+  Future<void> updateLecture(Lecture lecture) async {
+    final Database db = await initializeDB();
+    await db.update("Lecture",
+        lecture.toMap(),
+        where: "id", whereArgs: [lecture.id]
+    );
+  }
+
+  Future<void> updateExam(Exam exam) async {
+    final Database db = await initializeDB();
+    await db.update("Exam",
+        exam.toMap(),
+        where: "id = ?", whereArgs: [exam.id]
+    );
+  }
+  Future<void> updateTopic(Topic topic) async {
+    final Database db = await initializeDB();
+    await db.update("Topic",
+        topic.toMap(),
+        where: "id = ?", whereArgs: [topic.id]
+    );
+  }
+
+  Future<void> updateCorrelation(Correlation correlation) async {
+    final Database db = await initializeDB();
+    await db.update("Correlation",
+        correlation.toMap(),
+        where: "Lecture.id = ? AND Exam.id = ? AND Topic.id = ?",
+        whereArgs: [correlation.lectureId, correlation.examId, correlation.topicId]
+    );
+  }
+
+  Future<void> updateQuestion(Question question) async {
+    final Database db = await initializeDB();
+    await db.update("Question",
+        question.toMap(),
+        where: "id = ?", whereArgs: [question.id]
+    );
+  }
+
+  Future<void> updateProgress(Progress progress) async {
+    final Database db = await initializeDB();
+    await db.update("Progress",
+        progress.toMap(),
+        where: "id = ?", whereArgs: [progress.id]
+    );
+  }
+
+
+  Future<void> deleteLecture(int id) async {
+    final Database db = await initializeDB();
+    await db.delete("Lecture",
+        where: "id = ?", whereArgs: [id]
+    );
+  }
+
+  Future<void> deleteExam(int id) async {
+    final Database db = await initializeDB();
+    await db.delete("Exam",
+        where: "id = ?", whereArgs: [id]
+    );
+  }
+
+  Future<void> deleteTopic(int id) async {
+    final Database db = await initializeDB();
+    await db.delete("Topics",
+        where: "id = ?", whereArgs: [id]
+    );
+  }
+
+  Future<void> deleteCorrelation(int lectureId, int examId, int topicId) async {
+    final Database db = await initializeDB();
+    await db.delete("Correlation",
+        where: "Lecture.id = ? AND Exam.id = ? AND Topic.id = ?" ,
+        whereArgs: [lectureId, examId, topicId]
+    );
+  }
+  Future<void> deleteQuestion(int id) async {
+    final Database db = await initializeDB();
+    await db.delete("Question",
+        where: "id = ?", whereArgs: [id]
+    );
+  }
+
+  Future<void> deleteProgress(int id) async {
+    final Database db = await initializeDB();
+    await db.delete("Progress",
+        where: "id = ?", whereArgs: [id]
+    );
+  }
 }
