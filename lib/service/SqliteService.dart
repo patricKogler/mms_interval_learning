@@ -215,7 +215,7 @@ class SqliteService {
   }
 
   /// deletes row of Correlation Table
-  /// [id] passes id of row to delete
+  /// [lectureId], [examId], [topicId] passes combined key of row to delete
   Future<void> deleteCorrelation(int lectureId, int examId, int topicId) async {
     final Database db = await initializeDB();
     await db.delete("Correlation",
