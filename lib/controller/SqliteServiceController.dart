@@ -8,20 +8,26 @@ import '../model/Topic.dart';
 import '../service/SqliteService.dart';
 
 class SqliteServiceController {
-
   SqliteService service = SqliteService();
 
-  void insertLecture(String name){
-    service.insertLecture(Lecture(name: name));
+  Future<Lecture> insertLecture(String name) async {
+    var lectureId = await service.insertLecture(Lecture(name: name));
+    return Lecture(id: lectureId, name: name);
   }
 
-  void insertExam(String date){
+  Future<void> removeLecture(int id) async {
+    await service.deleteLecture(id);
+  }
+
+  void insertExam(String date) {
     service.insertExam(Exam(date: date, passed: false));
   }
 
-  void insertTopic(String title){
+  void insertTopic(String title) {
     service.insertTopic(Topic(title: title));
   }
 
-
+  Future<List<Lecture>> getAllLectures() {
+    return service.lectures();
+  }
 }
