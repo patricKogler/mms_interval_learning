@@ -2,7 +2,8 @@ import 'package:mms_interval_learning/controller/SqliteServiceController.dart';
 import 'package:mms_interval_learning/model/Lecture.dart';
 import 'package:riverpod/riverpod.dart';
 
-final lecturesProvider = StateNotifierProvider((ref) {
+final lecturesProvider =
+    StateNotifierProvider<LecturesNotifier, AsyncValue<List<Lecture>>>((ref) {
   return LecturesNotifier();
 });
 
@@ -16,10 +17,12 @@ class LecturesNotifier extends StateNotifier<AsyncValue<List<Lecture>>> {
   void _init() async {
     state = const AsyncValue.loading();
     final List<Lecture> lectures = await serviceController.getAllLectures();
+    print(lectures);
     state = AsyncValue.data(lectures);
   }
 
   void addLecture(String lecture) async {
+    print(lecture);
     if (state.hasValue) {
       var insertLecture = await serviceController.insertLecture(lecture);
       state = AsyncValue.data([...state.value ?? [], insertLecture]);

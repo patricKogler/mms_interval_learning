@@ -81,6 +81,19 @@ class SqliteService {
     });
   }
 
+  Future<List<Topic>> getTopicsForLecture(int lectureId) async {
+    final Database db = await initializeDB();
+    final List<Map<String, dynamic>> topics = await db.rawQuery(
+        "SELECT t from Topic "
+        "join Correlation c on c.topicId = t.id "
+        "join Lecture l on c.lectureId = l.id"
+        "where l.id = ?",
+        [lectureId]);
+    return List.generate(topics.length, (i) {
+      return Topic.fromMap(topics[i]);
+    });
+  }
+
   /// return table Exam as list
   Future<List<Exam>> exams() async {
     final Database db = await initializeDB();
