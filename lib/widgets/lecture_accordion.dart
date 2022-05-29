@@ -41,63 +41,72 @@ class _LectureAccordionState extends State<LectureAccordion> {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Row(children: [
-            SizedBox(
-              width: 400,
-              height: 40,
-              child: OutlinedButton(
-                  onPressed: toggleTopics,
-                  child: Row(
-                    children: [
-                      Expanded(child: Text(widget.lecture.name)),
-                      if (showTopics)
-                        const Icon(Icons.arrow_drop_down)
-                      else
-                        const Icon(Icons.arrow_left)
-                    ],
-                  )),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 5),
-              child: SizedBox(
+          Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 400,
                   height: 40,
                   child: OutlinedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => TopicEditPage(
-                                      lectureId: widget.lecture.id!,
-                                    )));
-                      },
-                      child: const Icon(Icons.add))),
-            )
-          ]),
-          if (showTopics)
-            Column(
-              children: [
-                if (topics.hasValue)
-                  for (final Topic topic in topics.value ?? [])
-                    SizedBox(
-                      width: 380,
-                      height: 35,
+                      onPressed: toggleTopics,
+                      child: Row(
+                        children: [
+                          Expanded(child: Text(widget.lecture.name)),
+                          if (showTopics)
+                            const Icon(Icons.arrow_drop_down)
+                          else
+                            const Icon(Icons.arrow_left)
+                        ],
+                      )),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 5),
+                  child: SizedBox(
+                      height: 40,
                       child: OutlinedButton(
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => TopicEditPage(
-                                      lectureId: widget.lecture.id!,
-                                      topic: topic,
-                                    )));
+                                          lectureId: widget.lecture.id!,
+                                        )));
                           },
-                          child: Row(
-                            children: [
-                              Expanded(child: Text(topic.title)),
-                            ],
-                          )),
-                    )
-              ],
+                          child: const Icon(Icons.add))),
+                )
+              ]),
+          if (showTopics)
+            Padding(
+              padding: EdgeInsets.only(right: 40, top: 1),
+              child: Column(
+                children: [
+                  if (topics.hasValue)
+                    for (final Topic topic in topics.value ?? [])
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 3),
+                        child: SizedBox(
+                          width: 380,
+                          height: 35,
+                          child: OutlinedButton(
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => TopicEditPage(
+                                              lectureId: widget.lecture.id!,
+                                              topic: topic,
+                                            )));
+                              },
+                              child: Row(
+                                children: [
+                                  Expanded(child: Text(topic.title)),
+                                ],
+                              )),
+                        ),
+                      )
+                ],
+              ),
             )
         ],
       ),
