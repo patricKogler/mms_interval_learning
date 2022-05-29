@@ -23,7 +23,6 @@ class _TopicEditPageState extends State<TopicEditPage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     topic = widget.topic;
   }
