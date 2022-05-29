@@ -48,15 +48,22 @@ class SqliteService {
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
+  Future<Exam> getDefaultExamForLecture(int lectureId) async {
+    final Database db = await initializeDB();
+    final List<Map<String, dynamic>> exams =
+        await db.query("Exam", where: "lecture_id = ?", whereArgs: [lectureId]);
+    return Exam.fromMap(exams.first);
+  }
+
   Future<void> linkExamAndTopic(int examId, int topicId) async {
     final Database db = await initializeDB();
     await db.insert("TopicExam", {"exam_id": examId, "topic_id": topicId});
   }
 
   /// insert tuple [topic] into table Topic
-  Future<void> insertTopic(Topic topic) async {
+  Future<int> insertTopic(Topic topic) async {
     final Database db = await initializeDB();
-    await db.insert("Topic", topic.toMap(),
+    return await db.insert("Topic", topic.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
@@ -86,10 +93,7 @@ class SqliteService {
   Future<List<Topic>> getTopicsForLecture(int lectureId) async {
     final Database db = await initializeDB();
     final List<Map<String, dynamic>> topics = await db.rawQuery(
-        "SELECT t from Topic "
-        "join Correlation c on c.topicId = t.id "
-        "join Lecture l on c.lectureId = l.id"
-        "where l.id = ?",
+        "SELECT * FROM Topic t WHERE t.id IN(SELECT te.topic_id FROM TopicExam te JOIN Exam e ON e.id = te.exam_id WHERE e.lecture_id = ?)",
         [lectureId]);
     return List.generate(topics.length, (i) {
       return Topic.fromMap(topics[i]);

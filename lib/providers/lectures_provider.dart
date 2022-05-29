@@ -17,7 +17,6 @@ class LecturesNotifier extends StateNotifier<AsyncValue<List<Lecture>>> {
   void _init() async {
     state = const AsyncValue.loading();
     final List<Lecture> lectures = await serviceController.getAllLectures();
-    print(lectures);
     state = AsyncValue.data(lectures);
   }
 

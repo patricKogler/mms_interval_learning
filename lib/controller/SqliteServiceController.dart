@@ -28,8 +28,11 @@ class SqliteServiceController {
     await service.deleteExam(id);
   }
 
-  void insertTopic(String title) {
-    service.insertTopic(Topic(title: title));
+  void insertTopic(String title, int lectureId) async {
+    var topicId = await service.insertTopic(Topic(title: title));
+    var defaultExamForLecture =
+        await service.getDefaultExamForLecture(lectureId);
+    service.linkExamAndTopic(defaultExamForLecture.id!, topicId);
   }
 
   Future<List<Lecture>> getAllLectures() {

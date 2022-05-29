@@ -19,12 +19,17 @@ class Exam {
       : id = map["id"],
         lectureId = map["lecture_id"],
         date = map["date"],
-        passed = map["passed"];
+        passed = map["passed"] == 0 ? false : true;
 
   /// returns map to use in database for inserts
   /// must contain column names as Strings
   Map<String, dynamic> toMap() {
-    return {"id": id, "lecture_id": lectureId, "date": date, "passed": passed};
+    return {
+      "id": id,
+      "lecture_id": lectureId,
+      "date": date,
+      "passed": passed ? 1 : 0
+    };
   }
 
   @override

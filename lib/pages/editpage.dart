@@ -5,6 +5,7 @@ import 'package:mms_interval_learning/controller/SqliteServiceController.dart';
 import 'package:mms_interval_learning/model/Lecture.dart';
 import 'package:mms_interval_learning/providers/exam_provider.dart';
 import 'package:mms_interval_learning/providers/lectures_provider.dart';
+import 'package:mms_interval_learning/widgets/lecture_accordion.dart';
 
 import '../controller/SqliteServiceController.dart';
 
@@ -30,7 +31,8 @@ class _EditPageState extends ConsumerState<EditPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               if (watch.hasValue)
-                for (final Lecture v in watch.value ?? []) Text(v.name),
+                for (final Lecture v in watch.value ?? [])
+                  LectureAccordion(key: Key(v.id.toString()), lecture: v),
             ],
           ),
         ),
