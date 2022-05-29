@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 
 import '../model/Lecture.dart';
 import '../model/Exam.dart';
-import '../model/Correlation.dart';
 import '../model/Question.dart';
 import '../model/Topic.dart';
 import '../service/SqliteService.dart';
@@ -19,8 +18,14 @@ class SqliteServiceController {
     await service.deleteLecture(id);
   }
 
-  void insertExam(String date) {
-    service.insertExam(Exam(date: date, passed: false));
+  Future<Exam> insertExam(int lectureId, String date) async {
+    var examId = await service
+        .insertExam(Exam(lectureId: lectureId, date: date, passed: false));
+    return Exam(id: examId, lectureId: lectureId, date: date, passed: false);
+  }
+
+  Future<void> removeExam(int id) async {
+    await service.deleteExam(id);
   }
 
   void insertTopic(String title) {
@@ -29,5 +34,9 @@ class SqliteServiceController {
 
   Future<List<Lecture>> getAllLectures() {
     return service.lectures();
+  }
+
+  Future<List<Exam>> getAllExams() {
+    return service.exams();
   }
 }

@@ -21,11 +21,11 @@ class LecturesNotifier extends StateNotifier<AsyncValue<List<Lecture>>> {
     state = AsyncValue.data(lectures);
   }
 
-  void addLecture(String lecture) async {
-    print(lecture);
+  Future<int?> addLecture(String lecture) async {
     if (state.hasValue) {
       var insertLecture = await serviceController.insertLecture(lecture);
       state = AsyncValue.data([...state.value ?? [], insertLecture]);
+      return insertLecture.id;
     } else {
       state = const AsyncValue.error("There was an Error");
     }

@@ -1,11 +1,11 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:mms_interval_learning/controller/SqliteServiceController.dart';
 import 'package:mms_interval_learning/model/Lecture.dart';
+import 'package:mms_interval_learning/providers/exam_provider.dart';
 import 'package:mms_interval_learning/providers/lectures_provider.dart';
-import '../service/SqliteService.dart';
+
 import '../controller/SqliteServiceController.dart';
 
 class EditPage extends ConsumerStatefulWidget {
@@ -17,15 +17,6 @@ class EditPage extends ConsumerStatefulWidget {
 
 class _EditPageState extends ConsumerState<EditPage> {
   SqliteServiceController serviceController = SqliteServiceController();
-
-  final myController = TextEditingController();
-
-  @override
-  void dispose() {
-    // Clean up the controller when the widget is disposed.
-    myController.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,14 +30,7 @@ class _EditPageState extends ConsumerState<EditPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               if (watch.hasValue)
-                for (final v in watch.value ?? []) Text(v.toString()),
-              Text('hallo'),
-              ElevatedButton(
-                onPressed: () {
-                  print('HI');
-                },
-                child: Text('Add new Lecture'),
-              ),
+                for (final Lecture v in watch.value ?? []) Text(v.name),
             ],
           ),
         ),
@@ -58,46 +42,123 @@ class _EditPageState extends ConsumerState<EditPage> {
             showDialog(
                 context: context,
                 builder: (context) {
-                  return AlertDialog(
-                    title: Text("Add Lecture"),
-                    content: Container(
-                      child: TextFormField(
-                        controller: myController,
-                        decoration: const InputDecoration(
-                          border: UnderlineInputBorder(),
-                          labelText: 'Enter the lecture name',
-                        ),
-                      ),
-                    ),
-                    actions: [
-                      TextButton(
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: Text("Dismiss")),
-                      TextButton(
-                          onPressed: () {
-                            ref
-                                .read(lecturesProvider.notifier)
-                                .addLecture(myController.value.text);
-                          },
-                          child: Text("Save"))
-                    ],
-                  );
+                  return AddLectureDialog(ref: ref);
                 });
           }),
     );
   }
+}
 
-  void addNewLecture(name) {
-    serviceController.insertLecture(name);
+class AddLectureDialog extends StatefulWidget {
+  const AddLectureDialog({
+    Key? key,
+    required this.ref,
+  }) : super(key: key);
+
+  final WidgetRef ref;
+
+  @override
+  State<AddLectureDialog> createState() => _AddLectureDialogState();
+}
+
+class _AddLectureDialogState extends State<AddLectureDialog> {
+  final lectureTextController = TextEditingController();
+  final examDateController = TextEditingController();
+  DateTime? _selectedDate = null;
+  bool isDisabled = true;
+  Widget? _step = null;
+  bool _lastStep = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _step = TextFormField(
+      controller: lectureTextController,
+      decoration: const InputDecoration(
+        border: UnderlineInputBorder(),
+        labelText: 'Enter the lecture name',
+      ),
+    );
   }
 
-  void addNewExam(date) {
-    serviceController.insertExam(date);
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    lectureTextController.dispose();
+    examDateController.dispose();
+    super.dispose();
   }
 
-  void addNewTopic(title) {
-    serviceController.insertTopic(title);
+  void _selectDate(BuildContext context) async {
+    DateTime? newSelectedDate = await showDatePicker(
+        context: context,
+        initialDate: _selectedDate ?? DateTime.now(),
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2040));
+    if (newSelectedDate != null) {
+      _selectedDate = newSelectedDate;
+      examDateController
+        ..text = DateFormat.yMMMd().format(newSelectedDate)
+        ..selection = TextSelection.fromPosition(TextPosition(
+            offset: examDateController.text.length,
+            affinity: TextAffinity.upstream));
+    }
+  }
+
+  void setNext() {
+    setState(() {
+      _lastStep = true;
+      _step = TextFormField(
+        onTap: () {
+          _selectDate(context);
+        },
+        controller: examDateController,
+        decoration: const InputDecoration(
+          border: UnderlineInputBorder(),
+          labelText: 'Enter Date of First Exam',
+        ),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    lectureTextController.addListener(() {
+      setState(() {
+        isDisabled = lectureTextController.value.text.isEmpty;
+      });
+    });
+    return AlertDialog(
+      title: Text("Add Lecture"),
+      content: AnimatedSwitcher(
+        duration: const Duration(milliseconds: 200),
+        child: _step,
+      ),
+      actions: [
+        TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text("Dismiss")),
+        if (!_lastStep)
+          OutlinedButton(
+              onPressed: isDisabled ? null : setNext, child: Text("Next")),
+        if (_lastStep)
+          OutlinedButton(
+              onPressed: isDisabled
+                  ? null
+                  : () async {
+                      var lectureId = await widget.ref
+                          .read(lecturesProvider.notifier)
+                          .addLecture(lectureTextController.value.text);
+                      widget.ref
+                          .read(examProvider.notifier)
+                          .addExam(lectureId!, examDateController.value.text);
+                      lectureTextController.clear();
+                      Navigator.of(context).pop();
+                    },
+              child: Text("Save")),
+      ],
+    );
   }
 }

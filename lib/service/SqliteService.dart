@@ -1,10 +1,11 @@
-import 'package:mms_interval_learning/model/Progress.dart';
-import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
+import 'dart:async';
 
-import '../model/Lecture.dart';
+import 'package:mms_interval_learning/model/Progress.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+
 import '../model/Exam.dart';
-import '../model/Correlation.dart';
+import '../model/Lecture.dart';
 import '../model/Question.dart';
 import '../model/Topic.dart';
 
@@ -15,15 +16,18 @@ class SqliteService {
 
   Future<Database> initializeDB() async {
     String path = await getDatabasesPath();
+
+    print(path);
+
     return openDatabase(
       join(path, dbName),
       onCreate: (database, version) async {
-        await database.execute("CREATE TABLE Lecture(id INTEGER PRIMARY KEY, name TEXT NOT NULL); \n" +
-            "CREATE TABLE Exam(id INTEGER PRIMARY KEY, date DATE NOT NULL, passed BOOLEAN); \n" +
-            "CREATE TABLE Topic(id INTEGER PRIMARY KEY, title TEXT NOT NULL); \n" +
-            "CREATE TABLE Correlation(Lectures.id INTEGER NOT NULL, Exam.id INTEGER NOT NULL, Topic.id NOT NULL, PRIMARY KEY(lectures.id, Exam.id, Topics.id); \n" +
-            "CREATE TABLE Question(id INTEGER PRIMARY KEY, media VARCHAR(12), Topic.Id INTEGER NOT NULL); \n" +
-            "CREATE TABLE Progress(id INTEGER PRIMARY KEY, evaluation DOUBLE NOT NULL, date DATE NOT NULL, Question.id INTEGER NOT NULL);");
+        await database.execute("CREATE TABLE Lecture(id INTEGER PRIMARY KEY, name TEXT NOT NULL); " +
+            "CREATE TABLE Exam(id INTEGER PRIMARY KEY, lecture_id INTEGER NOT NULL, date DATE NOT NULL, passed BOOLEAN); " +
+            "CREATE TABLE Topic(id INTEGER PRIMARY KEY, title TEXT NOT NULL); " +
+            "CREATE TABLE TopicExam(exam_id INTEGER NOT NULL, topic_id INTEGER NOT NULL, PRIMARY KEY(exam_id, topic_id));" +
+            "CREATE TABLE Question(id INTEGER PRIMARY KEY, media VARCHAR(12), topic_id INTEGER NOT NULL); " +
+            "CREATE TABLE Progress(id INTEGER PRIMARY KEY, evaluation DOUBLE NOT NULL, date DATE NOT NULL, question_id INTEGER NOT NULL);");
       },
       version: 1,
     );
@@ -38,23 +42,21 @@ class SqliteService {
   }
 
   /// insert tuple [exam] into table Exam
-  Future<void> insertExam(Exam exam) async {
+  Future<int> insertExam(Exam exam) async {
     final Database db = await initializeDB();
-    await db.insert("Exam", exam.toMap(),
+    return await db.insert("Exam", exam.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
+  }
+
+  Future<void> linkExamAndTopic(int examId, int topicId) async {
+    final Database db = await initializeDB();
+    await db.insert("TopicExam", {"exam_id": examId, "topic_id": topicId});
   }
 
   /// insert tuple [topic] into table Topic
   Future<void> insertTopic(Topic topic) async {
     final Database db = await initializeDB();
     await db.insert("Topic", topic.toMap(),
-        conflictAlgorithm: ConflictAlgorithm.replace);
-  }
-
-  /// insert tuple [correlation] into table Correlation
-  Future<void> insertCorrelation(Correlation correlation) async {
-    final Database db = await initializeDB();
-    await db.insert("Correlation", correlation.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
@@ -112,16 +114,6 @@ class SqliteService {
     });
   }
 
-  /// return table Correlation as list
-  Future<List<Correlation>> correlations() async {
-    final Database db = await initializeDB();
-    final List<Map<String, dynamic>> correlations =
-        await db.query("Correlation");
-    return List.generate(correlations.length, (i) {
-      return Correlation.fromMap(correlations[i]);
-    });
-  }
-
   /// return table Question as list
   Future<List<Question>> questions() async {
     final Database db = await initializeDB();
@@ -162,19 +154,6 @@ class SqliteService {
     final Database db = await initializeDB();
     await db
         .update("Topic", topic.toMap(), where: "id = ?", whereArgs: [topic.id]);
-  }
-
-  /// updates Correlation table in database
-  /// new values are passed through [correlation] parameter
-  Future<void> updateCorrelation(Correlation correlation) async {
-    final Database db = await initializeDB();
-    await db.update("Correlation", correlation.toMap(),
-        where: "Lecture.id = ? AND Exam.id = ? AND Topic.id = ?",
-        whereArgs: [
-          correlation.lectureId,
-          correlation.examId,
-          correlation.topicId
-        ]);
   }
 
   /// updates Question table in database
