@@ -3,14 +3,30 @@ import 'package:mms_interval_learning/controller/SqliteServiceController.dart';
 
 import '../model/Topic.dart';
 
-class TopicEditPage extends StatelessWidget {
+class TopicEditPage extends StatefulWidget {
   final int lectureId;
   Topic? topic;
-  final topicNameController = TextEditingController();
-  final service = SqliteServiceController();
 
   TopicEditPage({Key? key, required this.lectureId, this.topic})
       : super(key: key);
+
+  @override
+  State<TopicEditPage> createState() => _TopicEditPageState();
+}
+
+class _TopicEditPageState extends State<TopicEditPage> {
+  final topicNameController = TextEditingController();
+
+  final service = SqliteServiceController();
+
+  Topic? topic = null;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    topic = widget.topic;
+  }
 
   void _showDialog(BuildContext context) {
     showDialog(
@@ -28,9 +44,12 @@ class TopicEditPage extends StatelessWidget {
             ),
             actions: [
               OutlinedButton(
-                  onPressed: () {
-                    service.insertTopic(
-                        topicNameController.value.text, lectureId);
+                  onPressed: () async {
+                    var t = await service.insertTopic(
+                        topicNameController.value.text, widget.lectureId);
+                    setState(() {
+                      topic = t;
+                    });
                     Navigator.of(context).pop();
                   },
                   child: Text("Save"))
@@ -48,7 +67,9 @@ class TopicEditPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Second Route'),
       ),
-      body: topic == null ? Text("") : Center(child: Text(topic!.title)),
+      body: topic == null
+          ? Text("")
+          : Center(child: Text(topic!.title)),
     );
   }
 }
