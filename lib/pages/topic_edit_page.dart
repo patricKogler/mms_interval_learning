@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mms_interval_learning/controller/SqliteServiceController.dart';
+import 'package:mms_interval_learning/widgets/question_editor.dart';
 
 import '../model/Topic.dart';
 
 class TopicEditPage extends StatefulWidget {
   final int lectureId;
+  final textController = TextEditingController();
   Topic? topic;
 
   TopicEditPage({Key? key, required this.lectureId, this.topic})
@@ -64,11 +66,31 @@ class _TopicEditPageState extends State<TopicEditPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Second Route'),
+        title: Text(topic!.title),
       ),
       body: topic == null
           ? Text("")
-          : Center(child: Text(topic!.title)),
+          : Column(
+              children: [
+                Text(topic!.title),
+                field(),
+                field(),
+              ],
+          ),
     );
+  }
+
+  Widget field(){
+    return ListView(
+      shrinkWrap: true,
+      children: [
+        QuestionEditor(
+            onChanged: (val) => testfunction()),
+      ],
+    );
+  }
+
+  void testfunction(){
+    print('Test');
   }
 }
