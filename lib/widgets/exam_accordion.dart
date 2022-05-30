@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:mms_interval_learning/model/Lecture.dart';
-import 'package:mms_interval_learning/model/Topic.dart';
-import 'package:mms_interval_learning/service/SqliteService.dart';
+import 'package:mms_interval_learning/providers/selected_topic_provider.dart';
 
-import '../pages/topic_edit_page.dart';
+import '../model/Exam.dart';
+import '../model/Topic.dart';
+import '../service/SqliteService.dart';
 
-class LectureAccordion extends StatefulWidget {
-  final Lecture lecture;
+class ExamAccordion extends ConsumerStatefulWidget {
+  final Exam exam;
 
-  const LectureAccordion({Key? key, required this.lecture}) : super(key: key);
+  const ExamAccordion({Key? key, required this.exam}) : super(key: key);
 
   @override
-  State<LectureAccordion> createState() => _LectureAccordionState();
+  _ExamAccordionState createState() => _ExamAccordionState();
 }
 
-class _LectureAccordionState extends State<LectureAccordion> {
+class _ExamAccordionState extends ConsumerState<ExamAccordion> {
   bool showTopics = false;
   AsyncValue<List<Topic>> topics = AsyncValue.loading();
   SqliteService sqliteService = SqliteService();
@@ -26,11 +26,15 @@ class _LectureAccordionState extends State<LectureAccordion> {
     });
     if (showTopics) {
       var t = await AsyncValue.guard(
-          () => sqliteService.getTopicsForLecture(widget.lecture.id!));
+          () => sqliteService.getTopicsForExam(widget.exam.id!));
       setState(() {
         topics = t;
       });
     }
+  }
+
+  toggleSelectedTopic(Topic topic) {
+    ref.read(selectedTopicsProvider.notifier).toggleSelectedTopic(topic);
   }
 
   @override
@@ -52,7 +56,7 @@ class _LectureAccordionState extends State<LectureAccordion> {
                       onPressed: toggleTopics,
                       child: Row(
                         children: [
-                          Expanded(child: Text(widget.lecture.name)),
+                          Expanded(child: Text(widget.exam.date)),
                           if (showTopics)
                             const Icon(Icons.arrow_drop_down)
                           else
@@ -65,15 +69,7 @@ class _LectureAccordionState extends State<LectureAccordion> {
                   child: SizedBox(
                       height: 40,
                       child: OutlinedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => TopicEditPage(
-                                          lectureId: widget.lecture.id!,
-                                        )));
-                          },
-                          child: const Icon(Icons.add))),
+                          onPressed: () {}, child: const Icon(Icons.add))),
                 )
               ]),
           if (showTopics)
@@ -89,14 +85,11 @@ class _LectureAccordionState extends State<LectureAccordion> {
                           width: 380,
                           height: 35,
                           child: OutlinedButton(
+                              style: ref.watch(selectedTopicsProvider).contains(topic.id!) ? ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all(
+                                      Colors.blue.shade300)) : null,
                               onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => TopicEditPage(
-                                              lectureId: widget.lecture.id!,
-                                              topic: topic,
-                                            )));
+                                toggleSelectedTopic(topic);
                               },
                               child: Row(
                                 children: [

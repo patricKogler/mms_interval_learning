@@ -109,6 +109,16 @@ class SqliteService {
     });
   }
 
+  Future<List<Topic>> getTopicsForExam(int examId) async {
+    final Database db = await initializeDB();
+    final List<Map<String, dynamic>> topics = await db.rawQuery(
+        "SELECT * FROM Topic t WHERE t.id IN(SELECT te.topic_id FROM TopicExam te WHERE te.exam_id = ?)",
+        [examId]);
+    return List.generate(topics.length, (i) {
+      return Topic.fromMap(topics[i]);
+    });
+  }
+
   /// return table Topic as list
   Future<List<Topic>> topics() async {
     final Database db = await initializeDB();
