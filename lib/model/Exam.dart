@@ -8,8 +8,7 @@ class Exam {
   String date;
   bool passed;
 
-  Exam(
-      {this.id,
+  Exam({this.id,
       required this.lectureId,
       required this.date,
       required this.passed});
