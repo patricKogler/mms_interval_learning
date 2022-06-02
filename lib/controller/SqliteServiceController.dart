@@ -31,7 +31,7 @@ class SqliteServiceController {
   Future<Topic> insertTopic(String title, int lectureId) async {
     var topicId = await service.insertTopic(Topic(title: title));
     var defaultExamForLecture =
-    await service.getDefaultExamForLecture(lectureId);
+        await service.getDefaultExamForLecture(lectureId);
     service.linkExamAndTopic(defaultExamForLecture.id!, topicId);
     return Topic(id: topicId, title: title);
   }
@@ -42,5 +42,24 @@ class SqliteServiceController {
 
   Future<List<Exam>> getAllExams() {
     return service.exams();
+  }
+
+  Future<Question> insertQuestion(String question, int topicId) async {
+    int questionId = await service
+        .insertQuestion(Question(text: question, topicId: topicId));
+
+    return Question(id: questionId, text: question, topicId: topicId);
+  }
+
+  Future<void> updateQuestion(Question question) async {
+    await service.updateQuestion(question);
+  }
+
+  Future<Set<Question>> getQuestionsForTopics(Set<int> topicIds) async {
+    final questions = await service.questions();
+    return {
+      for (final question in questions)
+        if (topicIds.contains(question.topicId)) question
+    };
   }
 }

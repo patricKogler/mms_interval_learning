@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:mms_interval_learning/controller/SqliteServiceController.dart';
+import 'package:mms_interval_learning/providers/question_provider.dart';
 import 'package:mms_interval_learning/widgets/question_editor.dart';
 
+import '../model/Question.dart';
 import '../model/Topic.dart';
 
-class TopicEditPage extends StatefulWidget {
+class TopicEditPage extends ConsumerStatefulWidget {
   final int lectureId;
   final textController = TextEditingController();
   Topic? topic;
@@ -13,10 +16,10 @@ class TopicEditPage extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<TopicEditPage> createState() => _TopicEditPageState();
+  ConsumerState<ConsumerStatefulWidget> createState() => _TopicEditPageState();
 }
 
-class _TopicEditPageState extends State<TopicEditPage> {
+class _TopicEditPageState extends ConsumerState<TopicEditPage> {
   final topicNameController = TextEditingController();
 
   final service = SqliteServiceController();
@@ -27,6 +30,9 @@ class _TopicEditPageState extends State<TopicEditPage> {
   void initState() {
     super.initState();
     topic = widget.topic;
+    if (topic != null) {
+      ref.read(questionProvider.notifier).setQuestionsForTopic(topic!.id!);
+    }
   }
 
   void _showDialog(BuildContext context) {
@@ -59,6 +65,10 @@ class _TopicEditPageState extends State<TopicEditPage> {
         });
   }
 
+  void addQuestion() {
+    ref.read(questionProvider.notifier).addQuestion("", topic!.id!);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (topic == null) {
@@ -72,25 +82,26 @@ class _TopicEditPageState extends State<TopicEditPage> {
           ? Text("")
           : Column(
               children: [
-                Text(topic!.title),
-                field(),
-                field(),
+                Row(children: [
+                  Text(topic!.title),
+                  TextButton(onPressed: addQuestion, child: Icon(Icons.add))
+                ]),
+                for (final Question question in ref.watch(questionProvider))
+                  QuestionEditor(
+                    key: Key(question.id.toString()),
+                    onChanged: (str) {
+                      ref
+                          .read(questionProvider.notifier)
+                          .updateQuestion(question.copyWith(text: str));
+                    },
+                    question: question,
+                  ),
               ],
-          ),
+            ),
     );
   }
 
-  Widget field(){
-    return ListView(
-      shrinkWrap: true,
-      children: [
-        QuestionEditor(
-            onChanged: (val) => testfunction()),
-      ],
-    );
-  }
-
-  void testfunction(){
+  void testfunction() {
     print('Test');
   }
 }

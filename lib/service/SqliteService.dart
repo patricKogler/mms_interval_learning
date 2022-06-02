@@ -26,7 +26,7 @@ class SqliteService {
             "CREATE TABLE Exam(id INTEGER PRIMARY KEY, lecture_id INTEGER NOT NULL, date DATE NOT NULL, passed BOOLEAN); " +
             "CREATE TABLE Topic(id INTEGER PRIMARY KEY, title TEXT NOT NULL); " +
             "CREATE TABLE TopicExam(exam_id INTEGER NOT NULL, topic_id INTEGER NOT NULL, PRIMARY KEY(exam_id, topic_id));" +
-            "CREATE TABLE Question(id INTEGER PRIMARY KEY, media VARCHAR(12), topic_id INTEGER NOT NULL); " +
+            "CREATE TABLE Question(id INTEGER PRIMARY KEY, text VARCHAR(254), media VARCHAR(12), topic_id INTEGER NOT NULL); " +
             "CREATE TABLE Progress(id INTEGER PRIMARY KEY, evaluation DOUBLE NOT NULL, date DATE NOT NULL, question_id INTEGER NOT NULL);");
       },
       version: 1,
@@ -68,9 +68,9 @@ class SqliteService {
   }
 
   /// insert tuple [question] into table Question
-  Future<void> insertQuestion(Question question) async {
+  Future<int> insertQuestion(Question question) async {
     final Database db = await initializeDB();
-    await db.insert("Question", question.toMap(),
+    return await db.insert("Question", question.toMap(),
         conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
@@ -205,15 +205,6 @@ class SqliteService {
   Future<void> deleteTopic(int id) async {
     final Database db = await initializeDB();
     await db.delete("Topics", where: "id = ?", whereArgs: [id]);
-  }
-
-  /// deletes row of Correlation Table
-  /// [lectureId], [examId], [topicId] passes combined key of row to delete
-  Future<void> deleteCorrelation(int lectureId, int examId, int topicId) async {
-    final Database db = await initializeDB();
-    await db.delete("Correlation",
-        where: "Lecture.id = ? AND Exam.id = ? AND Topic.id = ?",
-        whereArgs: [lectureId, examId, topicId]);
   }
 
   /// deletes row of Question Table

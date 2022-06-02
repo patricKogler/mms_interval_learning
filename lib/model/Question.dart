@@ -13,24 +13,27 @@ class Question {
 
   /// retrieves data from database in form of a map
   Question.fromMap(Map<String, dynamic> map)
-    : id = map["id"],
-      text = map["text"],
-      mediaPath = map["media"],
-      topicId = map["Topic.id"];
+      : id = map["id"],
+        text = map["text"],
+        mediaPath = map["media"],
+        topicId = map["topic_id"];
 
   /// returns map to use in database for inserts
   /// must contain column names as Strings
   Map<String, dynamic> toMap() {
-    return {
-      "id": id,
-      "text": text,
-      "media": mediaPath,
-      "Topic.id": topicId
-    };
+    return {"id": id, "text": text, "media": mediaPath, "topic_id": topicId};
   }
 
   @override
   String toString() {
-    return "{[id: $id; text: $text; media: $mediaPath; Topic.id: $topicId]}";
+    return "{[id: $id; text: $text; media: $mediaPath; topic_id: $topicId]}";
+  }
+
+  Question copyWith({int? id, String? text, String? mediaPath, int? topicId}) {
+    return Question(
+        id: id ?? this.id,
+        text: text ?? this.text,
+        mediaPath: mediaPath ?? this.mediaPath,
+        topicId: topicId ?? this.topicId);
   }
 }

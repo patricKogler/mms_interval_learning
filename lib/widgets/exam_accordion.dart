@@ -8,8 +8,10 @@ import '../service/SqliteService.dart';
 
 class ExamAccordion extends ConsumerStatefulWidget {
   final Exam exam;
+  final Function(bool, int) onSelect;
 
-  const ExamAccordion({Key? key, required this.exam}) : super(key: key);
+  const ExamAccordion({Key? key, required this.exam, required this.onSelect})
+      : super(key: key);
 
   @override
   _ExamAccordionState createState() => _ExamAccordionState();
@@ -39,6 +41,7 @@ class _ExamAccordionState extends ConsumerState<ExamAccordion> {
 
   @override
   Widget build(BuildContext context) {
+    var watch = ref.watch(selectedTopicsProvider);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Column(
@@ -80,15 +83,20 @@ class _ExamAccordionState extends ConsumerState<ExamAccordion> {
                   if (topics.hasValue)
                     for (final Topic topic in topics.value ?? [])
                       Padding(
+                        key: Key(topic.id!.toString()),
                         padding: const EdgeInsets.symmetric(vertical: 3),
                         child: SizedBox(
                           width: 380,
                           height: 35,
                           child: OutlinedButton(
-                              style: ref.watch(selectedTopicsProvider).contains(topic.id!) ? ButtonStyle(
+                              style: ButtonStyle(
                                   backgroundColor: MaterialStateProperty.all(
-                                      Colors.blue.shade300)) : null,
+                                      watch.contains(topic.id!)
+                                          ? Colors.blue.shade50
+                                          : Colors.white)),
                               onPressed: () {
+                                widget.onSelect(
+                                    !watch.contains(topic.id!), topic.id!);
                                 toggleSelectedTopic(topic);
                               },
                               child: Row(
