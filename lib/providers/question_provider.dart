@@ -14,6 +14,7 @@ class QuestionsNotifier extends StateNotifier<List<Question>> {
 
   Future<void> setQuestionsForTopics(Set<int> topicIds) async {
     final questions = await service.getQuestionsForTopics(topicIds);
+
     state = [...questions];
   }
 
