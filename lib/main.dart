@@ -51,16 +51,13 @@ class _MainPageState extends ConsumerState<MainPage>
   @override
   Widget build(BuildContext context) => MaterialApp(
         home: Scaffold(
-          appBar: AppBar(
-            title: Text('Interval Learning App - Tab: ${controller.index}'),
-            centerTitle: true,
-            bottom: TabBar(
+          backgroundColor: Colors.blue,
+          appBar: TabBar(
               controller: controller,
               tabs: [
                 Tab(icon: Icon(Icons.edit), text: 'Bearbeitungsmodus'),
                 Tab(icon: Icon(Icons.poll), text: 'Lernmodus'),
               ],
-            ),
           ),
           body: TabBarView(
             controller: controller,
