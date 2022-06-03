@@ -1,4 +1,6 @@
 import 'package:flutter/cupertino.dart';
+import 'package:intl/intl.dart';
+import 'package:mms_interval_learning/model/Progress.dart';
 
 import '../model/Lecture.dart';
 import '../model/Exam.dart';
@@ -45,14 +47,31 @@ class SqliteServiceController {
   }
 
   Future<Question> insertQuestion(String question, int topicId) async {
-    int questionId = await service
-        .insertQuestion(Question(text: question, topicId: topicId));
+    var createdAt = DateFormat.yMMMd().format(DateTime.now());
+    int questionId = await service.insertQuestion(
+        Question(createdAt: createdAt, text: question, topicId: topicId));
 
-    return Question(id: questionId, text: question, topicId: topicId);
+    return Question(
+        id: questionId, createdAt: createdAt, text: question, topicId: topicId);
   }
 
   Future<void> updateQuestion(Question question) async {
     await service.updateQuestion(question);
+  }
+
+  Future<void> insertProgress(int questionId, double evaluation) async {
+    await service.insertProgress(Progress(
+        evaluation: evaluation,
+        questionId: questionId,
+        date: DateFormat.yMMMd().format(DateTime.now())));
+  }
+
+  Future<List<Progress>> getProgressForQuestion(int questionId) async {
+    var progress = await service.progress();
+    return [
+      for (final p in progress)
+        if (p.questionId == questionId) p
+    ]..sort((a, b) => DateTime.parse(a.date).compareTo(DateTime.parse(b.date)));
   }
 
   Future<Set<Question>> getQuestionsForTopics(Set<int> topicIds) async {

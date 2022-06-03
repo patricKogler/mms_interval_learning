@@ -51,10 +51,9 @@ class _TopicsLearnPageState extends ConsumerState<TopicsLearnPage> {
           : Row(
               children: [
                 QuestionView(
-                    onLearned: () {
-                      ref
-                          .read(questionProvider.notifier)
-                          .markQuestionAsLearned(watch.first);
+                    onLearned: (evaluation) {
+                      ref.read(questionProvider.notifier).markQuestionAsLearned(
+                          watch.first, evaluation.toInt());
                     },
                     question: watch.first),
                 TextButton(

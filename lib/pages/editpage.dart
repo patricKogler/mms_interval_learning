@@ -67,7 +67,8 @@ class _AddLectureDialogState extends State<AddLectureDialog> {
   final lectureTextController = TextEditingController();
   final examDateController = TextEditingController();
   DateTime? _selectedDate = null;
-  bool isDisabled = true;
+  bool isNextDisabled = true;
+  bool isSaveDisabled = true;
   Widget? _step = null;
   bool _lastStep = false;
 
@@ -127,9 +128,16 @@ class _AddLectureDialogState extends State<AddLectureDialog> {
   Widget build(BuildContext context) {
     lectureTextController.addListener(() {
       setState(() {
-        isDisabled = lectureTextController.value.text.isEmpty;
+        isNextDisabled = lectureTextController.value.text.isEmpty;
       });
     });
+
+    examDateController.addListener(() {
+      setState(() {
+        isSaveDisabled = examDateController.value.text.isEmpty;
+      });
+    });
+
     return AlertDialog(
       title: Text("Add Lecture"),
       content: AnimatedSwitcher(
@@ -144,10 +152,10 @@ class _AddLectureDialogState extends State<AddLectureDialog> {
             child: Text("Dismiss")),
         if (!_lastStep)
           OutlinedButton(
-              onPressed: isDisabled ? null : setNext, child: Text("Next")),
+              onPressed: isNextDisabled ? null : setNext, child: Text("Next")),
         if (_lastStep)
           OutlinedButton(
-              onPressed: isDisabled
+              onPressed: isSaveDisabled
                   ? null
                   : () async {
                       var lectureId = await widget.ref

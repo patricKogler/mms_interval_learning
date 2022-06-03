@@ -5,15 +5,22 @@
 /// [topicId] assigns the question to one of the existing topics
 class Question {
   final int? id;
+  String createdAt;
   String text;
   String? mediaPath;
   final int? topicId;
 
-  Question({this.id, required this.text, this.mediaPath, this.topicId});
+  Question(
+      {this.id,
+      required this.createdAt,
+      required this.text,
+      this.mediaPath,
+      this.topicId});
 
   /// retrieves data from database in form of a map
   Question.fromMap(Map<String, dynamic> map)
       : id = map["id"],
+        createdAt = map["created_at"],
         text = map["text"],
         mediaPath = map["media"],
         topicId = map["topic_id"];
@@ -21,17 +28,29 @@ class Question {
   /// returns map to use in database for inserts
   /// must contain column names as Strings
   Map<String, dynamic> toMap() {
-    return {"id": id, "text": text, "media": mediaPath, "topic_id": topicId};
+    return {
+      "id": id,
+      "created_at": createdAt,
+      "text": text,
+      "media": mediaPath,
+      "topic_id": topicId
+    };
   }
 
   @override
   String toString() {
-    return "{[id: $id; text: $text; media: $mediaPath; topic_id: $topicId]}";
+    return "{[id: $id; created_at: $createdAt, text: $text; media: $mediaPath; topic_id: $topicId]}";
   }
 
-  Question copyWith({int? id, String? text, String? mediaPath, int? topicId}) {
+  Question copyWith(
+      {int? id,
+      String? createdAt,
+      String? text,
+      String? mediaPath,
+      int? topicId}) {
     return Question(
         id: id ?? this.id,
+        createdAt: createdAt ?? this.createdAt,
         text: text ?? this.text,
         mediaPath: mediaPath ?? this.mediaPath,
         topicId: topicId ?? this.topicId);

@@ -26,7 +26,7 @@ class SqliteService {
             "CREATE TABLE Exam(id INTEGER PRIMARY KEY, lecture_id INTEGER NOT NULL, date DATE NOT NULL, passed BOOLEAN); " +
             "CREATE TABLE Topic(id INTEGER PRIMARY KEY, title TEXT NOT NULL); " +
             "CREATE TABLE TopicExam(exam_id INTEGER NOT NULL, topic_id INTEGER NOT NULL, PRIMARY KEY(exam_id, topic_id));" +
-            "CREATE TABLE Question(id INTEGER PRIMARY KEY, text VARCHAR(254), media VARCHAR(12), topic_id INTEGER NOT NULL); " +
+            "CREATE TABLE Question(id INTEGER PRIMARY KEY, created_at DATE NOT NULL, text VARCHAR(254), media VARCHAR(12), topic_id INTEGER NOT NULL); " +
             "CREATE TABLE Progress(id INTEGER PRIMARY KEY, evaluation DOUBLE NOT NULL, date DATE NOT NULL, question_id INTEGER NOT NULL);");
       },
       version: 1,

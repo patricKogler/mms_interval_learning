@@ -30,7 +30,7 @@ class _TopicEditPageState extends ConsumerState<TopicEditPage> {
   void initState() {
     super.initState();
     topic = widget.topic;
-    if (topic != null) {
+    if (topic != null && topic?.id != null) {
       ref.read(questionProvider.notifier).setQuestionsForTopic(topic!.id!);
     }
   }
@@ -76,7 +76,7 @@ class _TopicEditPageState extends ConsumerState<TopicEditPage> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text(topic!.title),
+        title: Text(topic?.title ?? ""),
       ),
       body: topic == null
           ? Text("")
