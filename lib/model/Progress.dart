@@ -16,7 +16,7 @@ class Progress {
     : id = map["id"],
       evaluation = map["evaluation"],
       date = map["date"],
-      questionId = map["Questions.id"];
+      questionId = map["question_id"];
 
   /// returns map to use in database for inserts
   /// must contain column names as Strings
@@ -25,12 +25,12 @@ class Progress {
       "id": id,
       "evaluation": evaluation,
       "date": date,
-      "Questions.id": questionId
+      "question_id": questionId
     };
   }
 
   @override
   String toString() {
-    return "{[id: $id; evaluation: $evaluation; date: $date; Question.id: $questionId]}";
+    return "{[id: $id; evaluation: $evaluation; date: $date; questions_id: $questionId]}";
   }
 }
